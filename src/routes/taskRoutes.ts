@@ -6,13 +6,14 @@ import {
   updateTask,
   deleteTask,
 } from '../controllers/taskController';
+import { authenticateJWT } from '../middleware/auth';
 
 const router = Router();
 
-router.post('/', createTask);
-router.get('/', getTasks);
-router.get('/:id', getTaskById);
-router.put('/:id', updateTask);
-router.delete('/:id', deleteTask);
+router.post('/', authenticateJWT, createTask);
+router.get('/', authenticateJWT, getTasks);
+router.get('/:id', authenticateJWT, getTaskById);
+router.put('/:id', authenticateJWT, updateTask);
+router.delete('/:id', authenticateJWT, deleteTask);
 
 export default router;

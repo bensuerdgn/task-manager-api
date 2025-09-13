@@ -32,15 +32,16 @@ Users can sign up, log in, and manage their own tasks with full **JWT authentica
 
 ## 📂 Project Structure
 
+```bash
 src/
 │── config/
-│ └── db.ts # Database connection & schema setup
+│   └── db.ts          # Database connection & schema setup
 │── routes/
-│ ├── auth.ts # Authentication routes
-│ └── tasks.ts # Task CRUD routes
+│   ├── auth.ts        # Authentication routes
+│   └── tasks.ts       # Task CRUD routes
 │── middleware/
-│ └── auth.ts # JWT middleware
-│── app.ts # Express app
-│── server.ts # Server startup
+│   └── auth.ts        # JWT middleware
+│── app.ts             # Express app
+│── server.ts          # Server startup
 │── package.json
 │── README.md

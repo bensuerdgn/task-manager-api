@@ -13,12 +13,23 @@ export const connectDB = () => {
     db.run(
       `CREATE TABLE IF NOT EXISTS tasks (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
         title TEXT,
         description TEXT,
         category TEXT,
-        completed INTEGER
+        completed INTEGER,
+        FOREIGN KEY (user_id) REFERENCES users (id)
       )`,
     );
+
+    db.run(
+      `CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE,
+        password TEXT
+      )`
+    );
+    
     return db;
   } catch (error) {
     console.error(error);

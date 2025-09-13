@@ -1,13 +1,16 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { connectDB } from '../config/db';
+import { AuthRequest } from '../middleware/auth';
 
 const db = connectDB();
 
-export const createTask = (req: Request, res: Response) => {
+export const createTask = (req: AuthRequest, res: Response) => {
   const { title, description, category, completed } = req.body;
+  const userId = req.user?.id;
+
   db.run(
-    'INSERT INTO tasks (title, description, category, completed) VALUES (?, ?, ?, ?)',
-    [title, description, category, completed],
+    'INSERT INTO tasks (title, description, category, completed, user_id) VALUES (?, ?, ?, ?, ?)',
+    [title, description, category, completed, userId],
     function (err) {
       if (err) {
         res.status(400).json({ error: err.message });
@@ -19,8 +22,10 @@ export const createTask = (req: Request, res: Response) => {
   );
 };
 
-export const getTasks = (req: Request, res: Response) => {
-  db.all('SELECT * FROM tasks', function (err, rows) {
+export const getTasks = (req: AuthRequest, res: Response) => {
+  const userId = req.user?.id;
+
+  db.all('SELECT * FROM tasks WHERE user_id = ?', [userId], function (err, rows) {
     if (err) {
       res.status(400).json({ error: err.message });
     }
@@ -28,9 +33,11 @@ export const getTasks = (req: Request, res: Response) => {
   });
 };
 
-export const getTaskById = (req: Request, res: Response) => {
+export const getTaskById = (req: AuthRequest, res: Response) => {
   const { id } = req.params;
-  db.get('SELECT * FROM tasks WHERE id = ?', [id], function (err, row) {
+  const userId = req.user?.id;
+
+  db.get('SELECT * FROM tasks WHERE id = ? AND user_id = ?', [id, userId], function (err, row) {
     if (err) {
       res.status(400).json({ error: err.message });
     }
@@ -38,12 +45,14 @@ export const getTaskById = (req: Request, res: Response) => {
   });
 };
 
-export const updateTask = (req: Request, res: Response) => {
+export const updateTask = (req: AuthRequest, res: Response) => {
   const { id } = req.params;
   const { title, description, category, completed } = req.body;
+  const userId = req.user?.id;
+
   db.run(
-    'UPDATE tasks SET title = ?, description = ?, category = ?, completed = ? WHERE id = ?',
-    [title, description, category, completed, id],
+    'UPDATE tasks SET title = ?, description = ?, category = ?, completed = ? WHERE id = ? AND user_id = ?',
+    [title, description, category, completed, id, userId],
     function (err) {
       if (err) {
         res.status(400).json({ error: err.message });
@@ -53,9 +62,11 @@ export const updateTask = (req: Request, res: Response) => {
   );
 };
 
-export const deleteTask = (req: Request, res: Response) => {
+export const deleteTask = (req: AuthRequest, res: Response) => {
   const { id } = req.params;
-  db.run('DELETE FROM tasks WHERE id = ?', [id], function (err) {
+  const userId = req.user?.id;
+
+  db.run('DELETE FROM tasks WHERE id = ? AND user_id = ?', [id, userId], function (err) {
     if (err) {
       res.status(400).json({ error: err.message });
     }
