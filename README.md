@@ -40,7 +40,10 @@ src/
 │   ├── auth.ts        # Authentication routes
 │   └── tasks.ts       # Task CRUD routes
 │── middleware/
-│   └── auth.ts        # JWT middleware
+│   └── auth.ts  
+│── model/
+│   └── task.ts       
+│   └── user.ts       
 │── app.ts             # Express app
 │── server.ts          # Server startup
 │── package.json
